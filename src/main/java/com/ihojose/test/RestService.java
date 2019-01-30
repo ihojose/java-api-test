@@ -1,38 +1,38 @@
 package com.ihojose.test;
 
-import org.springframework.http.HttpEntity;
+import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- * test was developed by Gammapeit SAS
- * <p>
- * Copyright (C) 2019 Gammapeit, SAS - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential.
- * Written by Jose Buelvas <jbuelvas@gammapeit.com>.
- *
- * @version 1.0.1
- * @name test
- * @date 29/01/2019
- * @copyright Gammapeit SAS (c) 2019
- * @companyURL https://www.gammapeit.com
- */
 @RestController
 @RequestMapping("/test")
 public class RestService {
+    private static final Logger LOG = Logger.getLogger(RestService.class.getSimpleName());
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/get")
-    @ResponseStatus(HttpStatus.OK)
-    public Map<String, Object> test() {
-        return null;
+    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, path = "/demo")
+    public ResponseEntity test(@RequestBody MyModel data) {
+        try {
+            if (!data.getNombre().isEmpty() && data.getNombre() != null && !data.getNumeroDocumento().isEmpty() && data.getNumeroDocumento() != null) {
+                return new ResponseEntity<>(new HashMap<String, Object>(){{
+                    put("message", "¡DATOS RECIBIDOS!");
+                }}, HttpStatus.OK);
+            } else {
+                LOG.log(Level.SEVERE, "RequestError({0})", new Gson().toJson(data));
+                throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "¡DATOS INCORRECTOS!");
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "RequestError({0})", new Gson().toJson(data));
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "¡DATOS INCORRECTOS!");
+        }
     }
 }
