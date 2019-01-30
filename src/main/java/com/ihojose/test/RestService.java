@@ -23,6 +23,7 @@ public class RestService {
     public ResponseEntity test(@RequestBody MyModel data) {
         try {
             if (!data.getNombre().isEmpty() && data.getNombre() != null && !data.getNumeroDocumento().isEmpty() && data.getNumeroDocumento() != null) {
+                LOG.log(Level.FINE, "RequestSuccess({0})", new Gson().toJson(data));
                 return new ResponseEntity<>(new HashMap<String, Object>(){{
                     put("message", "¡DATOS RECIBIDOS!");
                 }}, HttpStatus.OK);
